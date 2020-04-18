@@ -1,0 +1,11 @@
+@import: credit-convert
+
+CreditConvert.document (|
+  name = {高専太郎};
+  date = {令和2年 4月 19日};
+  dean = {中山伸一};
+  faculty = {情報};
+  department = {情報科};
+  grade = 3;
+  id = 3141592;
+|)

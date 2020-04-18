@@ -1,0 +1,234 @@
+@require: math
+@require: code
+@require: color
+@require: pervasives
+
+type credit-to = (string * inline-text * float)
+type credit-from = (inline-text * float * inline-text * inline-text)
+type convert-unit = (credit-to list * credit-from list)
+type category = string * (convert-unit list)
+
+type credit-info = (|
+  name: inline-text;
+  date: inline-text;
+  dean: inline-text;
+  faculty: inline-text;
+  department: inline-text;
+  grade: int;
+  id: int;
+|)
+
+module CreditConvert : sig
+  val document : credit-info -> document
+end = struct
+
+  let font-ratio-latin = 1.
+  let font-ratio-cjk = 0.88
+  let font-cjk-mincho   = (`ipaexm`    , font-ratio-cjk  , 0.)
+  let font-cjk-gothic   = (`ipaexg`    , font-ratio-cjk  , 0.)
+  let font-latin-roman  = (`Junicode`   , font-ratio-latin, 0.)
+
+  let get-standard-context wid =
+    get-initial-context wid (command \math)
+      |> set-code-text-command (command \code)
+      |> set-dominant-wide-script Kana
+      |> set-language Kana Japanese
+      |> set-language HanIdeographic Japanese
+      |> set-dominant-narrow-script Latin
+      |> set-language Latin English
+      |> set-font Kana           font-cjk-mincho
+      |> set-font HanIdeographic font-cjk-mincho
+      |> set-font Latin          font-latin-roman
+      |> set-math-font `lmodern`
+      |> set-hyphen-penalty 100
+
+
+
+  let header ctx =
+    read-inline ctx {別記様式第６号（第１５号関係）}
+
+  let-rec join sep l = match l with
+    | [] -> []
+    | [x] -> [x]
+    | x :: xs -> x :: sep :: join sep xs
+
+  let ib-space-between ctx width itl =
+    let ibl = List.map (read-inline ctx) itl in
+    let ibl-width-total =
+      ibl
+      |> List.map (fun ib -> get-natural-width ib)
+      |> List.fold-left (+') 0pt in
+    let skip-width =
+      (width -' ibl-width-total) *' (1pt /' (1pt *' (float ((List.length ibl) - 1))))
+    in
+      ibl
+      |> join (inline-skip skip-width)
+      |> List.fold-left (++) inline-nil
+
+  let belongs ctx r =
+    let e = EmptyCell in
+    let pads = (5pt, 5pt, 10pt, 10pt) in
+    let nc ib = NormalCell(pads, ib) in
+    let mc w h ib = MultiCell(h, w, pads, ib) in
+    let ncw-r target-w it =
+      let ib = read-inline ctx it in
+      let w = get-natural-width ib in
+      NormalCell(pads, inline-skip (target-w -' w) ++ ib)
+    in
+    let name = r#name in
+    let faculty = r#faculty in
+    let department = r#department in
+    let grade = embed-string (arabic (r#grade)) in
+    let id = embed-string (arabic (r#id)) in
+    let cells = [
+      [nc (ib-space-between ctx 1.5cm {|所|属|}); ncw-r 2.5cm {#faculty;学群}; ncw-r 2.5cm {#department;学類}; ncw-r 2.5cm {#grade;年次}];
+      [nc (ib-space-between ctx 1.5cm {|学|籍|番|号|}); mc 3 1 (inline-fil ++ (read-inline ctx id)); e; e];
+      [nc (ib-space-between ctx 1.5cm {|氏|名|}); mc 3 1 (inline-fil ++ read-inline ctx name); e; e];
+    ]
+    in
+    tabular cells (fun _ _ -> [])
+
+  let brace-right hgt color point =
+
+    let fontsize = hgt *' 0.4 in
+    let halflen = hgt *' 0.5 in
+    let hgtaxis = hgt *' 0.5 in
+
+    let t0 = fontsize *' 0.0125 in
+    let t4 = fontsize *' 0.025 in
+
+    let h-straight =  halflen *' 0.9 -' fontsize *' 0.3 in
+    let w1 = fontsize *' 0.0125 in
+    let w2 = fontsize *' 0.02 in
+    let w5 = fontsize *' 0.01 in
+    let w6 = fontsize *' 0.015 in
+    let w-extra = fontsize *' 0.1 in
+
+    let x0 = w-extra +' fontsize *' 0.125 in
+    let x1 = w-extra +' fontsize *' 0.25 in
+    let x3 = x1 +' fontsize *' 0.2 in
+    let x4 = x3 +' fontsize *' 0.01 in
+    let x5 = x1 +' fontsize *' 0.0625 in
+    let x7 = w-extra +' fontsize *' 0.225 in
+
+    let p0 = w-extra +' fontsize *' 0.2 in
+    let p1 = x1 +' w1 in
+    let p2 = x1 -' w2 in
+    let p3 = x3 -' fontsize *' 0.1 in
+    let p4 = x4 -' fontsize *' 0.09 in
+    let p5 = x5 -' w5 in
+    let p6 = x5 +' w6 in
+    let p7 = w-extra +' fontsize *' 0.3 in
+
+    let y0 = t0 in
+    let y1 = fontsize *' 0.125 in
+    let y2 = y1 +' h-straight in
+    let y3 = halflen in
+    let y4 = halflen -' t4 in
+    let y5 = halflen -' fontsize *' 0.175 in
+    let y6 = y5 -' h-straight in
+    let y7 = 0pt in
+
+    let q0 = y0 in
+    let q1 = y1 in
+    let q2 = y2 in
+    let q3 = halflen -' fontsize *' 0.00875 in
+    let q4 = halflen -' t4 -' fontsize *' 0.01 in
+    let q5 = y5 in
+    let q6 = y6 in
+    let q7 = fontsize *' 0.025 in
+
+    let path (xpos, ypos) =
+      let ycenter = ypos +' hgtaxis in
+      let fP (x, y) = (xpos +' x4 -' x +' w-extra, ycenter +' y) in
+      let fN (x, y) = (xpos +' x4 -' x +' w-extra, ycenter -' y) in
+        start-path   (fP (x0, y0))
+          |> bezier-to (fP (p0, q0)) (fP (p1, q1)) (fP (x1, y1))
+          |> line-to (fP (x1, y2))
+          |> bezier-to (fP (p2, q2)) (fP (p3, q3)) (fP (x3, y3))
+          |> line-to (fP (x4, y4))
+          |> bezier-to (fP (p4, q4)) (fP (p5, q5)) (fP (x5, y5))
+          |> line-to (fP (x5, y6))
+          |> bezier-to (fP (p6, q6)) (fP (p7, q7)) (fP (x7, y7))
+          |> bezier-to (fN (p7, q7)) (fN (p6, q6)) (fN (x5, y6))
+          |> line-to (fN (x5, y5))
+          |> bezier-to (fN (p5, q5)) (fN (p4, q4)) (fN (x4, y4))
+          |> line-to (fN (x3, y3))
+          |> bezier-to (fN (p3, q3)) (fN (p2, q2)) (fN (x1, y2))
+          |> line-to (fN (x1, y1))
+          |> bezier-to (fN (p1, q1)) (fN (p0, q0)) (fN (x0, y0))
+          |> close-with-line
+    in
+    [ fill color (path point); ]
+
+  let from-rule ctx =
+    let pads = (5pt, 5pt, 10pt, 10pt) in
+    let e = EmptyCell in
+    let nc ib = NormalCell(pads, ib) in
+    let mc w h ib = MultiCell(h, w, pads, ib) in
+    let rule1 = read-inline ctx {１ 国立大学法人筑波大学学群学則第３６条} in
+    let rule2 = read-inline ctx {２ 国立大学法人筑波大学学群学則第３７条} in
+    let sep =
+      inline-graphics 10pt 40pt 0pt (brace-right 40pt Color.black)
+    in
+    let body =
+      let ctx = ctx
+        |> set-paragraph-margin 0pt 0pt
+      in
+      let itl = {|の規定により単位の認定を受けたいので、下記のとおり|申請します。|} in
+      embed-block-top ctx 170pt (fun ctx ->(
+        let bb = itl
+        |> List.map (fun it -> line-break true true ctx (read-inline ctx it))
+        |> List.fold-left (+++) block-nil
+        in bb +++ block-skip 5pt))
+    in
+    let cells = [
+      [nc rule1; mc 1 2 sep; mc 1 2 body];
+      [nc rule2; e; e];
+    ]
+    in
+    tabular cells (fun _ _ -> [])
+
+  let main-title ctx r =
+    let lb = line-break true true ctx in
+    let ri = read-inline ctx in
+    let dean = r#dean in
+    let faculty = r#faculty in
+    [
+      lb (inline-fil ++ ri {他大学等において修得した単位等に係る単位認定申請書} ++ inline-fil);
+      lb (inline-fil ++ ri r#date);
+      lb (ri  {#faculty;学郡長　#dean;殿});
+      lb (inline-fil ++ belongs ctx r);
+      lb (from-rule ctx);
+      lb (inline-fil ++ ri {記} ++ inline-fil)
+    ] |> List.fold-left (+++) block-nil
+
+  let frontpage ctx r =
+    main-title ctx r
+
+  let document credit-info =
+    let page = A4Paper in
+    let txtorg = (80pt, 100pt) in
+    let hdrorg = (40pt, 30pt) in
+    let ftrorg = (40pt, 780pt) in
+    let txthgt = 630pt in
+    let txtwid = 440pt in
+    let (txtorgx, txtorgy) = txtorg in
+    let ctx = get-standard-context txtwid in
+    let pagecontf pbinfo =
+      (|
+        text-origin = (txtorgx, txtorgy);
+        text-height = txthgt;
+      |)
+    in
+    let pagepartsf pbinfo =
+      (|
+        header-origin = hdrorg;
+        header-content = line-break true true ctx (header ctx);
+        footer-origin = ftrorg;
+        footer-content = block-nil;
+      |)
+    in
+    let frontpage = frontpage ctx credit-info in
+      page-break page pagecontf pagepartsf (frontpage)
+end
