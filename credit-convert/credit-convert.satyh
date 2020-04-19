@@ -351,7 +351,7 @@ end = struct
     let gen-line xs ys = match (xs, ys, List.reverse ys) with
       | (xbegin :: x1 :: x2 :: x3 :: x4 ::x5 :: x6 :: x7 :: xlast :: [], ybegin ::y1 :: y2 :: _, ylast :: y-1 :: _) -> (
         let bold p1 p2 = stroke 1pt Color.black (Gr.line p1 p2) in
-        [
+        let basic = [
           bold (xbegin, ybegin) (xbegin, ylast);
           bold (xbegin, ybegin) (xlast, ybegin);
           bold (xlast, ybegin) (xlast, ylast);
@@ -367,6 +367,13 @@ end = struct
           bold (x6, y1) (x6, ylast);
           bold (x7, y1) (x7, ylast);
         ]
+        in
+        let h-from-idx idx = List.nth idx ys |> Option.from 0pt in
+        let conversion-sep = sub-separates
+          |> List.map (fun idx -> idx + 2) |> List.map h-from-idx |> List.map (fun y -> bold (x1, y) (xlast, y)) in
+        let category-sep = main-separates
+          |> List.map (fun idx -> idx + 2) |> List.map h-from-idx |> List.map (fun y -> bold (xbegin, y) (xlast, y)) in
+        List.concat [basic;conversion-sep; category-sep]
       )
       | _ -> []
     in
