@@ -215,6 +215,7 @@ end = struct
       let skip = (target-w -' w) *' 0.5 in
       inline-skip skip ++ ib ++ inline-skip skip
     in
+    let ctx-date = ctx |> set-font-size 9pt in
     let graduated-school = r#graduated-school in
     let ri = read-inline ctx in
     let pads = (0pt, 0pt, 5pt, 5pt) in
@@ -230,13 +231,13 @@ end = struct
         nc (centering-with-w 3cm (ri {添付する書類}));
       ];
       [
-        mc 1 4 (ri {#graduated-school;});
+        mc 1 4 (inline-fil ++ ri {#graduated-school;} ++ inline-fil);
         nc (ri {１　筑波大学在学中});
         nc (ri {１　成績証明書});
       ];
       [
         e;
-        nc (ri {（#tsukuba-from;〜#tsukuba-to;）});
+        nc (read-inline ctx-date {（#tsukuba-from;〜#tsukuba-to;）});
         nc (ri {２　修了（在学）証明書});
       ];
       [
@@ -246,12 +247,22 @@ end = struct
       ];
       [
         e;
-        nc (ri {（#graduated-from;〜#graduated-to;）});
+        nc (read-inline ctx-date {（#graduated-from;〜#graduated-to;）});
         e;
       ]
     ]
     in
     let gen-line xs ys = match (xs, ys) with
+      | (x1 :: x2 :: x3 :: x4 :: [], y1 :: y2 :: _ :: y4 :: _ :: y6 :: []) -> (
+          let bold p1 p2 = stroke 1pt Color.black (Gr.line p1 p2) in
+          let hlines = List.map (fun y -> bold (x1, y) (x4, y)) in
+          let vlines = List.map (fun x -> bold (x, y1) (x, y6)) in
+          bold (x2, y4) (x3, y4) ::
+          List.concat [
+            hlines [y1; y2; y6];
+            vlines xs;
+          ]
+      )
       | _ -> []
     in
     line-break true true ctx (tabular cells gen-line)
