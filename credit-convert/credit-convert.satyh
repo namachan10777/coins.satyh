@@ -318,7 +318,7 @@ end = struct
     let ri = read-inline ctx in
     let e = EmptyCell in
     let nc ib = NormalCell(pads, ib) in
-    let index-cell it = nc (inline-fil ++ ri it ++ inline-fil) in
+    let index-cell it = NormalCell (nopads, inline-fil ++ ri it ++ inline-fil) in
     let mc w h ib = MultiCell(h, w, nopads, ib) in
     let ad-hoc-hack = inline-graphics 0pt 7pt 0pt (fun _ -> []) in
     let h1 = ri {認定を希望する授業科目} in
@@ -326,8 +326,8 @@ end = struct
     let h1-w = get-natural-width h1 in
     let h2-w = get-natural-width h2 in
     let header = [
-      [NormalCell(nopads, inline-skip 50pt ++ ad-hoc-hack);
-        mc 3 1 (inline-skip ((270pt -' h1-w) *' 0.5 -' 50pt) ++ h1 ++ inline-skip ((270pt -' h1-w) *' 0.5)); e; e;
+      [NormalCell(nopads, inline-skip 65pt ++ ad-hoc-hack);
+        mc 3 1 (inline-skip ((270pt -' h1-w) *' 0.5 -' 65pt) ++ h1 ++ inline-skip ((270pt -' h1-w) *' 0.5)); e; e;
         mc 4 1 (inline-skip ((270pt -' h2-w) *' 0.5) ++ h2 ++ inline-skip ((270pt -' h2-w) *' 0.5)); e; e; e];
       [index-cell {科目区分};index-cell {科目番号}; index-cell {授業科目名};index-cell {単位数};
         index-cell {授業科目名}; index-cell {単位等}; index-cell {評価等}; index-cell {備考};];
