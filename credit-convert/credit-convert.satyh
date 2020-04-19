@@ -41,6 +41,7 @@ end = struct
       |> set-font Latin          font-latin-roman
       |> set-math-font `lmodern`
       |> set-hyphen-penalty 100
+      |> set-font-size 10pt
 
 
 
@@ -67,7 +68,7 @@ end = struct
 
   let belongs ctx r =
     let e = EmptyCell in
-    let pads = (5pt, 5pt, 10pt, 10pt) in
+    let pads = (2pt, 2pt, 7pt, 7pt) in
     let nc ib = NormalCell(pads, ib) in
     let mc w h ib = MultiCell(h, w, pads, ib) in
     let ncw-r target-w it =
@@ -190,6 +191,7 @@ end = struct
     tabular cells (fun _ _ -> [])
 
   let main-title ctx r =
+    let ctx = ctx |> set-paragraph-margin 0pt 0pt in
     let lb = line-break true true ctx in
     let ri = read-inline ctx in
     let dean = r#dean in
@@ -200,6 +202,7 @@ end = struct
       lb (ri  {#faculty;学郡長　#dean;殿});
       lb (inline-fil ++ belongs ctx r);
       lb (from-rule ctx);
+      block-skip 5pt;
       lb (inline-fil ++ ri {記} ++ inline-fil)
     ] |> List.fold-left (+++) block-nil
 
@@ -208,8 +211,8 @@ end = struct
 
   let document credit-info =
     let page = A4Paper in
-    let txtorg = (80pt, 100pt) in
-    let hdrorg = (40pt, 30pt) in
+    let txtorg = (80pt, 35pt) in
+    let hdrorg = (40pt, 20pt) in
     let ftrorg = (40pt, 780pt) in
     let txthgt = 630pt in
     let txtwid = 440pt in
