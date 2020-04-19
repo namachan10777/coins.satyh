@@ -216,35 +216,36 @@ end = struct
       let skip = (target-w -' w) *' 0.5 in
       inline-skip skip ++ ib ++ inline-skip skip
     in
-    let ctx-date = ctx |> set-font-size 9pt in
+    let ctx-date = ctx |> set-font-size 8pt in
     let graduated-school = r#graduated-school in
     let ri = read-inline ctx in
-    let pads = (0pt, 0pt, 5pt, 5pt) in
+    let pads = (0pt, 0pt, 2pt, 2pt) in
     let e = EmptyCell in
     let nc ib = NormalCell(pads, ib) in
     let mc w h ib = MultiCell(h, w, pads, ib) in
     let (tsukuba-from, tsukuba-to) = r#tsukuba-duration in
     let (graduated-from, graduated-to) = r#graduated-school-duration in
+    let txtwid = 540pt in
     let cells = [
       [
-        nc (centering-with-w 7cm (ri {単位の習得等を行った大学等}));
-        nc (centering-with-w 6cm (ri {単位の習得等を行った時期}));
-        nc (centering-with-w 4.5cm (ri {添付する書類}));
+        nc (centering-with-w 270pt (ri {単位の習得等を行った大学等}));
+        nc (centering-with-w 160pt (ri {単位の習得等を行った時期}));
+        nc (centering-with-w 110pt (ri {添付する書類}));
       ];
       [
         mc 1 4 (inline-fil ++ ri {#graduated-school;} ++ inline-fil);
         nc (ri {１　筑波大学在学中});
-        nc (ri {１　成績証明書});
+        nc (ri {１成績証明書});
       ];
       [
         e;
         nc (read-inline ctx-date {（#tsukuba-from;〜#tsukuba-to;）});
-        nc (ri {２　修了（在学）証明書});
+        nc (ri {２修了（在学）証明書});
       ];
       [
         e;
         nc (ri {１　筑波大学入学前});
-        nc (ri {３　その他});
+        nc (ri {３その他});
       ];
       [
         e;
@@ -271,7 +272,7 @@ end = struct
   let string-of-float _ = ` `
 
   let-rec gen-conversion-cells ctx conversions =
-    let pads = (1pt, 1pt, 1pt, 1pt) in
+    let pads = (1pt, 1pt, 4pt, 1pt) in
     let nc it = NormalCell(pads, read-inline ctx it) in
     let e = EmptyCell in
     match conversions with
@@ -308,16 +309,21 @@ end = struct
 
   let conversion-table ctx tbl =
     let pads = (5pt, 5pt, 2pt, 2pt) in
+    let nopads = (0pt, 0pt, 2pt, 2pt) in
     let ri = read-inline ctx in
     let e = EmptyCell in
     let nc ib = NormalCell(pads, ib) in
     let index-cell it = nc (inline-fil ++ ri it ++ inline-fil) in
-    let mc w h ib = MultiCell(h, w, pads, ib) in
+    let mc w h ib = MultiCell(h, w, nopads, ib) in
     let ad-hoc-hack = inline-graphics 0pt 7pt 0pt (fun _ -> []) in
     let h1 = ri {認定を希望する授業科目} in
     let h2 = ri {認定の対象となる他大学等において修得した単位等} in
+    let h1-w = get-natural-width h1 in
+    let h2-w = get-natural-width h2 in
     let header = [
-      [nc ad-hoc-hack; mc 3 1 (inline-skip 0pt ++ h1 ++ inline-fil); e; e; mc 4 1 h2; e; e; e];
+      [NormalCell(nopads, inline-skip 50pt ++ ad-hoc-hack);
+        mc 3 1 (inline-skip ((270pt -' h1-w) *' 0.5 -' 50pt) ++ h1 ++ inline-skip ((270pt -' h1-w) *' 0.5)); e; e;
+        mc 4 1 (inline-skip ((270pt -' h2-w) *' 0.5) ++ h2 ++ inline-skip ((270pt -' h2-w) *' 0.5)); e; e; e];
       [index-cell {科目区分};index-cell {科目番号}; index-cell {授業科目名};index-cell {単位数};
         index-cell {授業科目名}; index-cell {単位等}; index-cell {評価等}; index-cell {備考};];
     ]
@@ -366,11 +372,11 @@ end = struct
 
   let document credit-info tables =
     let page = A4Paper in
-    let txtorg = (40pt, 35pt) in
-    let hdrorg = (40pt, 20pt) in
-    let ftrorg = (40pt, 780pt) in
+    let txtorg = (30pt, 35pt) in
+    let hdrorg = (30pt, 20pt) in
+    let ftrorg = (30pt, 780pt) in
     let txthgt = 630pt in
-    let txtwid = 520pt in
+    let txtwid = 540pt in
     let (txtorgx, txtorgy) = txtorg in
     let ctx = get-standard-context txtwid in
     let pagecontf pbinfo =
