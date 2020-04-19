@@ -12,3 +12,15 @@ CreditConvert.document (|
   tsukuba-duration = ({}, {});
   graduated-school = {香川高等専門学校 電気情報工学科};
 |)
+[
+  [
+    ({専門必修}, [
+      ([
+          (`GBxxxxxxx`, {コンピュータリテラシ}, 1.0);
+        ],
+        [
+          ({コンピュータ入門}, 2.0, {優}, {});
+        ]);
+    ]);
+  ];
+]
