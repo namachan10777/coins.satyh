@@ -1,8 +1,11 @@
 @import: credit-convert
 
+let-inline ctx \small it =
+  read-inline (ctx |> set-font-size 8pt) it
+in
 CreditConvert.document (|
-  name = {高専太郎};
-  date = {令和2年 4月 19日};
+  name = {中野将生};
+  date = {令和2年 4月 20日};
   dean = {中山伸一};
   faculty = {情報};
   department = {情報科};
@@ -14,13 +17,38 @@ CreditConvert.document (|
 |)
 [
   [
-    ({専門必修}, [
-      ([
-          (`GBxxxxxxx`, {コンピュータリテラシ}, 1.0);
+    ({基礎共通必修}, [
+      (
+        [
+          (`3174012`, {English Reading Ⅱ}, 1.0);
+          (`3153112`, {English Reading Ⅰ}, 0.5);
+          (`31BH102`, {\small{English Intercultural Communication Ⅰ}}, 0.5);
+          (`31FH102`, {\small{English Intercultural Communication Ⅱ}}, 1.0);
+          (`31EH012`, {\small{English Critical Reading Strategies Ⅱ}}, 1.0);
         ],
         [
-          ({コンピュータ入門}, 2.0, {優}, {});
-        ]);
+          ({科学技術英語}, 2.0, {可}, {});
+          ({英語Ⅳ}, 2.0, {優}, {});
+        ]
+      );
+      (
+        [
+          (`31CH012`, {\small{English Integrated Skills Ⅰ}}, 0.5);
+          (`31GH012`, {\small{English Integrated Skills Ⅰ}}, 1.0);
+        ],
+        [
+          ({TOEIC L&R 765}, 1.5, {}, {履修要覧別表第17より})
+        ]
+      );
+      (
+        [
+          (`_`, {基礎体育}, 1.0);
+          (`_`, {応用体育}, 1.0);
+        ],
+        [
+          ({保健体育Ⅳ}, 2.0, {優}, {})
+        ]
+      );
     ]);
   ];
 ]
