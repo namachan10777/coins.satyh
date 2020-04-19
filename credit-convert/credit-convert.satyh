@@ -16,6 +16,9 @@ type credit-info = (|
   department: inline-text;
   grade: int;
   id: int;
+  graduated-school-duration: (inline-text * inline-text);
+  tsukuba-duration: (inline-text * inline-text);
+  graduated-school: inline-text;
 |)
 
 module CreditConvert : sig
@@ -206,8 +209,55 @@ end = struct
       lb (inline-fil ++ ri {記} ++ inline-fil)
     ] |> List.fold-left (+++) block-nil
 
+  let graduated-school-info ctx r =
+    let centering-with-w target-w ib = 
+      let w = get-natural-width ib in
+      let skip = (target-w -' w) *' 0.5 in
+      inline-skip skip ++ ib ++ inline-skip skip
+    in
+    let graduated-school = r#graduated-school in
+    let ri = read-inline ctx in
+    let pads = (0pt, 0pt, 5pt, 5pt) in
+    let e = EmptyCell in
+    let nc ib = NormalCell(pads, ib) in
+    let mc w h ib = MultiCell(h, w, pads, ib) in
+    let (tsukuba-from, tsukuba-to) = r#tsukuba-duration in
+    let (graduated-from, graduated-to) = r#graduated-school-duration in
+    let cells = [
+      [
+        nc (centering-with-w 7cm (ri {単位の習得等を行った大学等}));
+        nc (centering-with-w 4cm (ri {単位の習得等を行った時期}));
+        nc (centering-with-w 3cm (ri {添付する書類}));
+      ];
+      [
+        mc 1 4 (ri {#graduated-school;});
+        nc (ri {１　筑波大学在学中});
+        nc (ri {１　成績証明書});
+      ];
+      [
+        e;
+        nc (ri {（#tsukuba-from;〜#tsukuba-to;）});
+        nc (ri {２　修了（在学）証明書});
+      ];
+      [
+        e;
+        nc (ri {１　筑波大学入学前});
+        nc (ri {３　その他});
+      ];
+      [
+        e;
+        nc (ri {（#graduated-from;〜#graduated-to;）});
+        e;
+      ]
+    ]
+    in
+    let gen-line xs ys = match (xs, ys) with
+      | _ -> []
+    in
+    line-break true true ctx (tabular cells gen-line)
+
   let frontpage ctx r =
-    main-title ctx r
+    main-title ctx r +++ graduated-school-info ctx r
 
   let document credit-info =
     let page = A4Paper in

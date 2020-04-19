@@ -8,4 +8,7 @@ CreditConvert.document (|
   department = {情報科};
   grade = 3;
   id = 3141592;
+  graduated-school-duration = ({平成28年4月1日}, {令和2年3月31日});
+  tsukuba-duration = ({}, {});
+  graduated-school = {香川高等専門学校 電気情報工学科};
 |)
