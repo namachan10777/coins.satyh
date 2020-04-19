@@ -48,9 +48,9 @@ CreditConvert.document (|
       (
         [
           (`3174012`, {English Reading Ⅱ}, 1.0);
-          (`3153112`, {English Reading Ⅰ}, 0.5);
           (`31BH102`, {\small{English Intercultural Communication Ⅰ}}, 0.5);
           (`31FH102`, {\small{English Intercultural Communication Ⅱ}}, 1.0);
+          (`31AH012`, {\small{English Critical Reading Strategies Ⅰ}}, 0.5);
           (`31EH012`, {\small{English Critical Reading Strategies Ⅱ}}, 1.0);
         ],
         [
