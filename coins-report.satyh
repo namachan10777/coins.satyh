@@ -76,6 +76,9 @@ module StdJaReport : sig
   direct \align : [(math list * align-label) list] inline-cmd
   direct \T : [math] math-cmd
   direct \H : [math] math-cmd
+  direct \macron : [string] inline-cmd
+  direct \dash : [] inline-cmd
+  direct +clear-page : [] block-cmd
 
 end = struct
 
@@ -811,6 +814,17 @@ end = struct
 
   let-math \T m =
     ${#m^\mathrm{T}}
+
+  let-inline ctx \macron s =
+    let it-macron = embed-string (s ^ string-unexplode [0x0304]) in
+    read-inline ctx it-macron
+
+  let-inline ctx \dash =
+    let it = embed-string (string-unexplode [0x2013]) in
+    read-inline ctx it
+
+  let-block ctx +clear-page =
+    clear-page
 
 end
 
