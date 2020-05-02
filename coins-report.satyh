@@ -76,6 +76,9 @@ module StdJaReport : sig
   direct \align : [(math list * align-label) list] inline-cmd
   direct \T : [math] math-cmd
   direct \H : [math] math-cmd
+  direct \zerovec : [] math-cmd
+  direct \argmin : [] math-cmd
+  direct \argmax : [] math-cmd
   direct \macron : [string] inline-cmd
   direct \dash : [] inline-cmd
   direct +clear-page : [] block-cmd
@@ -814,6 +817,11 @@ end = struct
 
   let-math \T m =
     ${#m^\mathrm{T}}
+
+  let-math \zerovec = math-char MathOrd `𝟎`
+
+  let-math \argmin = ${\mathrm{argmin}}
+  let-math \argmax = ${\mathrm{argmax}}
 
   let-inline ctx \macron s =
     let it-macron = embed-string (s ^ string-unexplode [0x0304]) in
