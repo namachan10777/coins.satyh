@@ -63,6 +63,7 @@ module StdJaReport : sig
   direct +chapter : [string?; string?; int?; inline-text; block-text] block-cmd
   direct +section : [string?; string?; (int * int)?;inline-text; block-text] block-cmd
   direct +subsection : [string?; string?; inline-text; block-text] block-cmd
+  direct +appendix : [inline-text; block-text] block-cmd
   direct +definition : [inline-text?; string?; inline-text] block-cmd
   direct +theorem : [inline-text?; string?; inline-text] block-cmd
   direct +example : [inline-text?; string?; inline-text] block-cmd
@@ -640,6 +641,16 @@ end = struct
       | Some(label) -> label
     in
       subsection-scheme ctx label title outline-title-opt inner
+
+  let-block ctx +appendix title inner =
+    let ctx-title = make-section-title ctx in
+    let ib-title = read-inline ctx-title title in
+    let bb-title =
+      line-break true false (ctx |> set-paragraph-margin section-top-margin section-bottom-margin)
+          ((inline-skip 10pt) ++ ib-title ++ (inline-fil))
+    in
+    let bb-inner = read-block ctx inner in
+      bb-title +++ bb-inner
 
 
   let theorem-scheme ctx ctxf category wordopt label inner =
