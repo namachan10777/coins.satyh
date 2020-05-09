@@ -57,6 +57,7 @@ module StdJaReport : sig
   direct \figure : [string?; inline-text; block-text] inline-cmd
   direct \table : [string?; inline-text; block-text] inline-cmd
   direct +centering : [inline-text] block-cmd
+  direct +centered-pdf : [length; string; int] block-cmd
   direct +p : [inline-text] block-cmd
   direct +p-n : [inline-text] block-cmd
   direct +chapter : [string?; string?; int?; inline-text; block-text] block-cmd
@@ -511,6 +512,11 @@ end = struct
 
   let-block ctx +centering inner =
     form-paragraph ctx (inline-fil ++ read-inline ctx inner ++ inline-fil)
+
+  let-block ctx +centered-pdf w path page =
+    let pdf = load-pdf-image path page in
+    let ib = use-image-by-width pdf w in
+    form-paragraph ctx (inline-fil ++ ib ++ inline-fil)
 
 
   let quad-indent ctx =
