@@ -85,6 +85,7 @@ module StdJaReport : sig
   direct \macron : [string] inline-cmd
   direct \dash : [] inline-cmd
   direct +clear-page : [] block-cmd
+  direct \bar : [math] math-cmd
 
 end = struct
 
@@ -874,6 +875,10 @@ end = struct
 
   let-block ctx +clear-page =
     clear-page
+  let-math \bar char =
+    let accent = math-char MathOrd `̄` in
+    ${#char#accent}
+
 
 end
 
