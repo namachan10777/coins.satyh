@@ -459,7 +459,7 @@ end = struct
           ctx-doc |> set-font-size font-size-author
         in
           line-break false false ctx
-            (inline-fil ++ read-inline ctx {#faculty;学郡　#department;学類　#author; （#id;）} ++ inline-fil)
+            (inline-fil ++ read-inline ctx {#faculty;学群　#department;学類　#author; （#id;）} ++ inline-fil)
       in
         bb-title-main +++ bb-author
     in
