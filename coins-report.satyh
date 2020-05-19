@@ -86,6 +86,7 @@ module StdJaReport : sig
   direct \dash : [] inline-cmd
   direct +clear-page : [] block-cmd
   direct \bar : [math] math-cmd
+  direct \red : [inline-text] inline-cmd
 
 end = struct
 
@@ -875,6 +876,10 @@ end = struct
 
   let-block ctx +clear-page =
     clear-page
+
+  let-inline ctx \red it =
+    read-inline (ctx |> set-text-color Color.red) it
+
   let-math \bar char =
     let accent = math-char MathOrd `̄` in
     ${#char#accent}
