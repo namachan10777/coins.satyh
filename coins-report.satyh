@@ -88,6 +88,7 @@ module StdJaReport : sig
   direct \bar : [math] math-cmd
   direct \red : [inline-text] inline-cmd
   direct \neg : [] math-cmd
+  direct \hat : [math] math-cmd
 
 end = struct
 
@@ -880,6 +881,10 @@ end = struct
 
   let-inline ctx \red it =
     read-inline (ctx |> set-text-color Color.red) it
+
+  let-math \hat char =
+    let hat = math-char MathOrd (string-unexplode [0x0302]) in
+    ${#char#hat}
 
   let-math \bar char =
     let accent = math-char MathOrd `̄` in
