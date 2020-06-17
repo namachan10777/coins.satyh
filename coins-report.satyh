@@ -87,6 +87,7 @@ module StdJaReport : sig
   direct +clear-page : [] block-cmd
   direct \bar : [math] math-cmd
   direct \red : [inline-text] inline-cmd
+  direct \neg : [] math-cmd
 
 end = struct
 
@@ -884,6 +885,7 @@ end = struct
     let accent = math-char MathOrd `̄` in
     ${#char#accent}
 
+  let-math \neg = math-char MathPrefix `¬`
 
 end
 
