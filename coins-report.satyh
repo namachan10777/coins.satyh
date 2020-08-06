@@ -76,6 +76,7 @@ module StdJaReport : sig
   direct \it : [inline-text] inline-cmd
   direct \footnote : [inline-text] inline-cmd
 
+  direct +desc : [inline-text; inline-text] block-cmd
   direct +align : [(math list * align-label) list] block-cmd
   direct \align : [(math list * align-label) list] inline-cmd
   direct \T : [math] math-cmd
@@ -868,6 +869,16 @@ end = struct
 
   let-math \argmin = ${\mathrm{argmin}}
   let-math \argmax = ${\mathrm{argmax}}
+
+  let-block ctx +desc title inner =
+    let title = 
+      read-inline (ctx |> set-latin-font font-latin-bold |> set-cjk-font font-cjk-gothic) title
+      |> line-break true true ctx
+    in
+    let inner = inline-skip 10pt ++ read-inline ctx inner
+      |> line-break true true ctx
+    in
+      title +++ inner
 
   let-inline ctx \macron s =
     let it-macron = embed-string (s ^ string-unexplode [0x0304]) in
