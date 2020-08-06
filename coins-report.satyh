@@ -73,6 +73,7 @@ module StdJaReport : sig
   direct +proof : [inline-text?; inline-text] block-cmd
   direct \emph : [inline-text] inline-cmd
   direct \dfn : [inline-text] inline-cmd
+  direct \it : [inline-text] inline-cmd
   direct \footnote : [inline-text] inline-cmd
 
   direct +align : [(math list * align-label) list] block-cmd
@@ -881,6 +882,9 @@ end = struct
 
   let-inline ctx \red it =
     read-inline (ctx |> set-text-color Color.red) it
+
+  let-inline ctx \it it =
+    read-inline (ctx |> set-latin-font font-latin-italic) it
 
   let-math \hat char =
     let hat = math-char MathOrd (string-unexplode [0x0302]) in
