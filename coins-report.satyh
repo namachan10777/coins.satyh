@@ -84,6 +84,7 @@ module StdJaReport : sig
   direct \argmax : [] math-cmd
   direct \macron : [string] inline-cmd
   direct \dash : [] inline-cmd
+  direct \it : [inline-text] inline-cmd
   direct +clear-page : [] block-cmd
   direct \bar : [math] math-cmd
   direct \red : [inline-text] inline-cmd
@@ -876,6 +877,9 @@ end = struct
     let it = embed-string (string-unexplode [0x2013]) in
     read-inline ctx it
 
+  let-inline ctx \it inner =
+    read-inline (ctx |> set-latin-font font-latin-italic) inner
+
   let-block ctx +clear-page =
     clear-page
 
@@ -889,6 +893,7 @@ end = struct
   let-math \bar char =
     let accent = math-char MathOrd `̄` in
     ${#char#accent}
+  
 
   let-math \neg = math-char MathPrefix `¬`
 
