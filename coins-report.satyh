@@ -38,6 +38,7 @@ module StdJaReport : sig
       author : inline-text;
       faculty : inline-text;
       department : inline-text;
+      en : bool;
       id: int;
     |)
 
@@ -180,7 +181,7 @@ end = struct
 
 
   let no-pads = (0pt, 0pt, 0pt, 0pt)
-
+  let-mutable is-en <- false
 
   let-inline ctx \ref-fig key =
     let opt = get-cross-reference (`fig:` ^ key ^ `:num`) in
@@ -217,7 +218,9 @@ end = struct
     |> join-references-smartly (fun x -> `(` ^ x ^ ` )`) `–`
     in
       let it = embed-string sacc in
-      read-inline ctx {式#it;}
+      if !is-en
+      then read-inline ctx {Eq. #it;}
+      else read-inline ctx {式#it;}
 
   let font-size-normal  = 12pt
   let font-size-title   = 18pt
@@ -444,6 +447,7 @@ end = struct
     let hdrwid = config#header-width in
     let ftrwid = config#footer-width in
     let show-pages = config#show-pages in
+    let () = is-en <- record#en in
 
     let () =
       FootnoteScheme.initialize ()
@@ -464,8 +468,15 @@ end = struct
         let ctx =
           ctx-doc |> set-font-size font-size-author
         in
-          line-break false false ctx
-            (inline-fil ++ read-inline ctx {#faculty;学群　#department;学類　#author; （#id;）} ++ inline-fil)
+          if !is-en
+          then
+            line-break false false ctx
+              (inline-fil ++ read-inline ctx {School of #faculty;　#department;} ++ inline-fil)
+            +++ line-break false false ctx
+              (inline-fil ++ read-inline ctx {#author; （#id;）} ++ inline-fil)
+          else
+            line-break false false ctx
+              (inline-fil ++ read-inline ctx {#faculty;学群　#department;学類　#author; （#id;）} ++ inline-fil)
       in
         bb-title-main +++ bb-author
     in
