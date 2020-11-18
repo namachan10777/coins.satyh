@@ -51,6 +51,7 @@ module StdJaReport : sig
   val set-latin-font : (string * float * float) -> context -> context
   val set-cjk-font   : (string * float * float) -> context -> context
   direct \ref-fig : [string] inline-cmd
+  direct \ref-sec : [string] inline-cmd
   direct \ref-tbl : [string] inline-cmd
   direct \ref-page : [string] inline-cmd
   direct \ref-eq : [string list] inline-cmd
@@ -181,6 +182,14 @@ end = struct
 
   let no-pads = (0pt, 0pt, 0pt, 0pt)
 
+  let-inline ctx \ref-sec key =
+    let opt = get-cross-reference (`sec:` ^ key ^ `:num`) in
+    let it =
+      match opt with
+      | None    -> {?}
+      | Some(s) -> embed-string s
+    in
+      inline-frame-breakable no-pads (Annot.link-to-location-frame key None) (read-inline ctx {節#it;})
 
   let-inline ctx \ref-fig key =
     let opt = get-cross-reference (`fig:` ^ key ^ `:num`) in
@@ -571,7 +580,7 @@ end = struct
     let () = num-section <- 0 in
     let () = num-subsection <- 0 in
     let s-num = arabic (!num-chapter) in
-    let () = register-cross-reference (label ^ `:num`) s-num in
+    let () = register-cross-reference (`chap:` ^ label ^ `:num`) s-num in
 %    let () = toc-acc-ref <- (TOCElementChapter(label, title)) :: !toc-acc-ref in
     let ib-num =
       read-inline ctx-title (embed-string (s-num ^ `.`))
@@ -595,7 +604,7 @@ end = struct
     let () = increment num-section in
     let () = num-subsection <- 0 in
     let s-num = arabic (!num-chapter) ^ `.` ^ arabic (!num-section) in
-    let () = register-cross-reference (label ^ `:num`) s-num in
+    let () = register-cross-reference (`sec:` ^ label ^ `:num`) s-num in
 %    let () = toc-acc-ref <- (TOCElementSection(label, title)) :: !toc-acc-ref in
     let ib-num =
       read-inline ctx-title (embed-string (s-num ^ `.`))
@@ -618,7 +627,7 @@ end = struct
   let subsection-scheme ctx label title outline-title-opt inner =
     let () = num-subsection <- !num-subsection + 1 in
     let s-num = arabic (!num-chapter) ^ `.` ^ arabic (!num-section) ^ `.` ^ arabic (!num-subsection) in
-    let () = register-cross-reference (label ^ `:num`) s-num in
+    let () = register-cross-reference (`sec:` ^ label ^ `:num`) s-num in
 %    let () = toc-acc-ref <- (TOCElementSubsection(label, title)) :: !toc-acc-ref in
     let ctx-title = make-subsection-title ctx in
     let ib-num =
