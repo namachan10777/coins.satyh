@@ -61,6 +61,7 @@ module StdJaReport : sig
   direct \table : [string?; inline-text; block-text] inline-cmd
   direct +centering : [inline-text] block-cmd
   direct +centered-pdf : [length; string; int] block-cmd
+  direct +centered-jpg : [(length * string) list] block-cmd
   direct +p : [inline-text] block-cmd
   direct +p-n : [inline-text] block-cmd
   direct +chapter : [string?; string?; int?; inline-text; block-text] block-cmd
@@ -572,6 +573,17 @@ end = struct
     let pdf = load-pdf-image path page in
     let ib = use-image-by-width pdf w in
     form-paragraph ctx (inline-fil ++ ib ++ inline-fil)
+
+  let-block ctx +centered-jpg l =
+    let ib = l
+    |> List.map (fun (w, path) -> (
+      let img = load-image path in
+      let ib = use-image-by-width img w in
+      ib
+    )) 
+    |> List.fold-left (fun acc ib -> acc ++ inline-fil ++ ib) inline-nil in
+    form-paragraph ctx (ib ++ inline-fil)
+
 
 
   let quad-indent ctx =
