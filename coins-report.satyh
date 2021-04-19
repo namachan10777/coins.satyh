@@ -78,6 +78,7 @@ module StdJaReport : sig
   direct \dfn : [inline-text] inline-cmd
   direct \it : [inline-text] inline-cmd
   direct \tt : [inline-text] inline-cmd
+  direct \small : [inline-text] inline-cmd
   direct \footnote : [inline-text] inline-cmd
 
   direct +desc : [inline-text; inline-text] block-cmd
@@ -236,6 +237,7 @@ end = struct
       then read-inline ctx {Eq. #it;}
       else read-inline ctx {式#it;}
 
+  let font-size-small   = 9pt
   let font-size-normal  = 12pt
   let font-size-title   = 18pt
   let font-size-author  = 16pt
@@ -939,6 +941,9 @@ end = struct
 
   let-inline ctx \tt it =
     read-inline (ctx |> set-latin-font font-latin-mono) it
+
+  let-inline ctx \small it =
+    read-inline (ctx |> set-font-size font-size-small) it
 
   let-math \hat char =
     let hat = math-char MathOrd (string-unexplode [0x0302]) in
