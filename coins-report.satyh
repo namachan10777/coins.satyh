@@ -91,11 +91,9 @@ module StdJaReport : sig
   direct \argmax : [] math-cmd
   direct \macron : [string] inline-cmd
   direct \dash : [] inline-cmd
-  direct \it : [inline-text] inline-cmd
   direct +clear-page : [] block-cmd
   direct \bar : [math] math-cmd
   direct \red : [inline-text] inline-cmd
-  direct \it : [inline-text] inline-cmd
   direct \neg : [] math-cmd
   direct \hat : [math] math-cmd
 
