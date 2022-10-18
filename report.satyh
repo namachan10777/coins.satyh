@@ -208,6 +208,8 @@ end = struct
     ctx |> set-font HanIdeographic font
         |> set-font Kana           font
 
+  let-mutable is-en <- false
+
   let-inline ctx \ref-lemma key =
     let opt = get-cross-reference (`lemma:` ^ key ^ `:num`) in
     let ctx = ctx |> set-latin-font font-latin-roman in
@@ -218,6 +220,7 @@ end = struct
     in
       inline-frame-breakable no-pads (Annot.link-to-location-frame key None) (read-inline ctx {Lemma #it;})
 
+
   let-inline ctx \ref-sec key =
     let opt = get-cross-reference (`sec:` ^ key ^ `:num`) in
     let it =
@@ -225,9 +228,8 @@ end = struct
       | None    -> {?}
       | Some(s) -> embed-string s
     in
-      inline-frame-breakable no-pads (Annot.link-to-location-frame key None) (read-inline ctx {節#it;})
+      inline-frame-breakable no-pads (Annot.link-to-location-frame key None) (read-inline ctx (if !is-en then {Sec. #it;} else {節#it;}))
 
-  let-mutable is-en <- false
 
   let-inline ctx \ref-fig key =
     let opt = get-cross-reference (`fig:` ^ key ^ `:num`) in
