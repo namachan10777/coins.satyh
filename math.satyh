@@ -1,0 +1,38 @@
+@require: math
+@require: pervasives
+
+module CoinsMath : sig
+  direct \T : [math] math-cmd
+  direct \H : [math] math-cmd
+  direct \zerovec : [] math-cmd
+  direct \argmin : [] math-cmd
+  direct \argmax : [] math-cmd
+  direct \macron : [string] inline-cmd
+  direct \dash : [] inline-cmd
+  direct +clear-page : [] block-cmd
+  direct \bar : [math] math-cmd
+  direct \red : [inline-text] inline-cmd
+  direct \neg : [] math-cmd
+  direct \hat : [math] math-cmd
+end = struct
+  let-math \hat char =
+    let hat = math-char MathOrd (string-unexplode [0x0302]) in
+    ${#char#hat}
+
+  let-math \bar char =
+    let accent = math-char MathOrd `̄` in
+    ${#char#accent}
+
+  let-math \neg = math-char MathPrefix `¬`
+
+  let-math \H m =
+    ${#m^\mathrm{H}}
+
+  let-math \T m =
+    ${#m^\mathrm{T}}
+
+  let-math \zerovec = math-char MathOrd `𝟎`
+
+  let-math \argmin = ${\mathrm{argmin}}
+  let-math \argmax = ${\mathrm{argmax}}
+end

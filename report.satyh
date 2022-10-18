@@ -28,7 +28,7 @@ type config = (|
   footer-width  : length;
 |)
 
-module StdJaReport : sig
+module CoinsReport : sig
 
   val default-config : config
 
@@ -85,18 +85,6 @@ module StdJaReport : sig
   direct +desc : [inline-text; inline-text] block-cmd
   direct +align : [(math list * align-label) list] block-cmd
   direct \align : [(math list * align-label) list] inline-cmd
-  direct \T : [math] math-cmd
-  direct \H : [math] math-cmd
-  direct \zerovec : [] math-cmd
-  direct \argmin : [] math-cmd
-  direct \argmax : [] math-cmd
-  direct \macron : [string] inline-cmd
-  direct \dash : [] inline-cmd
-  direct +clear-page : [] block-cmd
-  direct \bar : [math] math-cmd
-  direct \red : [inline-text] inline-cmd
-  direct \neg : [] math-cmd
-  direct \hat : [math] math-cmd
 
 end = struct
 
@@ -908,16 +896,6 @@ end = struct
     inline-fil ++
       embed-block-breakable ctx (read-block ctx '<+align(mlstlst);>)
 
-  let-math \H m =
-    ${#m^\mathrm{H}}
-
-  let-math \T m =
-    ${#m^\mathrm{T}}
-
-  let-math \zerovec = math-char MathOrd `𝟎`
-
-  let-math \argmin = ${\mathrm{argmin}}
-  let-math \argmax = ${\mathrm{argmax}}
 
   let-block ctx +desc title inner =
     let title = 
@@ -955,17 +933,7 @@ end = struct
   let-inline ctx \small it =
     read-inline (ctx |> set-font-size font-size-small) it
 
-  let-math \hat char =
-    let hat = math-char MathOrd (string-unexplode [0x0302]) in
-    ${#char#hat}
-
-  let-math \bar char =
-    let accent = math-char MathOrd `̄` in
-    ${#char#accent}
-  
-
-  let-math \neg = math-char MathPrefix `¬`
 
 end
 
-let document = StdJaReport.document
+let document = CoinsReport.document
