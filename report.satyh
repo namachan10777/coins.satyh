@@ -238,7 +238,7 @@ end = struct
       | None    -> {?}
       | Some(s) -> embed-string s
     in
-      inline-frame-breakable no-pads (Annot.link-to-location-frame key None) (read-inline ctx {図#it;})
+      inline-frame-breakable no-pads (Annot.link-to-location-frame key None) (read-inline ctx (if !is-en then {Fig. #it;} else {図#it;}))
 
   let-inline ctx \ref-tbl key =
     let opt = get-cross-reference (`tbl:` ^ key ^ `:num`) in
@@ -247,7 +247,7 @@ end = struct
       | None    -> {?}
       | Some(s) -> embed-string s
     in
-      inline-frame-breakable no-pads (Annot.link-to-location-frame key None) (read-inline ctx {表#it;})
+      inline-frame-breakable no-pads (Annot.link-to-location-frame key None) (read-inline ctx (if !is-en then {Tbl. #it;} else {表#it;}))
 
   let-inline ctx \ref-page key =
     let opt = get-cross-reference (key ^ `:page`) in
@@ -318,7 +318,7 @@ end = struct
     let bb-inner =
       block-frame-breakable ctx (2pt, 2pt, 2pt, 2pt) ds (fun ctx -> (
         read-block ctx inner
-          +++ line-break true true ctx (inline-fil ++ read-inline ctx {図#it-num; #caption;} ++ inline-fil)
+          +++ line-break true true ctx (inline-fil ++ read-inline ctx (if !is-en then {Fig. #it-num; #caption;} else {図#it-num; #caption;}) ++ inline-fil)
       ))
     in
       hook-page-break (fun pbinfo _ -> (
@@ -344,7 +344,7 @@ end = struct
     let bb-inner =
       block-frame-breakable ctx (2pt, 2pt, 2pt, 2pt) ds (fun ctx -> (
         read-block ctx inner
-          +++ line-break true true ctx (inline-fil ++ read-inline ctx {図#it-num; #caption;} ++ inline-fil)
+          +++ line-break true true ctx (inline-fil ++ read-inline ctx (if !is-en then {Fig. #it-num; #caption;} else {図#it-num; #caption;}) ++ inline-fil)
       ))
     in
       bb-inner
@@ -369,7 +369,7 @@ end = struct
     in
     let bb-inner =
       block-frame-breakable (ctx |> set-paragraph-margin 5pt 0pt) (2pt, 2pt, 2pt, 2pt) ds (fun ctx -> (
-        line-break true true ctx (inline-fil ++ read-inline ctx {表#it-num; #caption;} ++ inline-fil)
+        line-break true true ctx (inline-fil ++ read-inline ctx (if !is-en then {Tbl. #it-num; #caption;} else {表#it-num; #caption;}) ++ inline-fil)
         +++ read-block ctx inner
       ))
     in
