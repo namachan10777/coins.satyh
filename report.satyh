@@ -63,6 +63,7 @@ module CoinsReport : sig
   direct +centering : [inline-text] block-cmd
   direct +centered-pdf : [length; string; int] block-cmd
   direct +centered-jpg : [(length * string) list] block-cmd
+  direct +clear-page: [] block-cmd
   direct +p : [inline-text] block-cmd
   direct +p-n : [inline-text] block-cmd
   direct +chapter : [string?; string?; int?; inline-text; block-text] block-cmd
