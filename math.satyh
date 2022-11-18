@@ -7,11 +7,7 @@ module CoinsMath : sig
   direct \zerovec : [] math-cmd
   direct \argmin : [] math-cmd
   direct \argmax : [] math-cmd
-  direct \macron : [string] inline-cmd
-  direct \dash : [] inline-cmd
-  direct +clear-page : [] block-cmd
   direct \bar : [math] math-cmd
-  direct \red : [inline-text] inline-cmd
   direct \neg : [] math-cmd
   direct \hat : [math] math-cmd
 end = struct
